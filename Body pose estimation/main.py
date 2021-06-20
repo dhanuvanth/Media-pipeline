@@ -25,31 +25,22 @@ while True:
     imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     results = pose.process(imgRGB)
     if results.pose_landmarks:
-        if args["debug"]:
-            mpDraw.draw_landmarks(img, results.pose_landmarks, mpPose.POSE_CONNECTIONS)
-        # else:
-        #     mpDraw.draw_landmarks(imgClone, results.pose_landmarks)
-        # for id, lm in enumerate(results.pose_landmarks.landmark):
-        #     h, w, c = img.shape
-        #     # print(id, lm)
-        #     cx, cy = int(lm.x * w), int(lm.y * h)
-        #     if args["debug"]:
-        #         cv2.rectangle(img, (cx - rs[0], cy + rs[1]), (cx + rs[0], cy - rs[1]), posePointsColor, cv2.FILLED)
-        #     else:
-        #         cv2.rectangle(imgClone, (cx - rs[0], cy + rs[1]), (cx + rs[0], cy - rs[1]), posePointsColor, cv2.FILLED)
+        mpDraw.draw_landmarks(img, results.pose_landmarks, mpPose.POSE_CONNECTIONS)
+        for id, lm in enumerate(results.pose_landmarks.landmark):
+            h, w, c = img.shape
+            # print(id, lm)
+            cx, cy = int(lm.x * w), int(lm.y * h)
+            if args["debug"]:
+                cv2.rectangle(img, (cx - rs[0], cy + rs[1]), (cx + rs[0], cy - rs[1]), posePointsColor, cv2.FILLED)
+           
 
-    # cTime = time.time()
-    # fps = 1 / (cTime - pTime)
-    # pTime = cTime
+    cTime = time.time()
+    fps = 1 / (cTime - pTime)
+    pTime = cTime
 
-    if args["debug"]:
-        # cv2.putText(imgClone, str(int(fps)), (40, 40), cv2.FONT_HERSHEY_PLAIN, 3,
-        #         (255, 0, 250), 3)
-        cv2.imshow("Image", img)
-    else:
-        # cv2.putText(img, str(int(fps)), (40, 40), cv2.FONT_HERSHEY_PLAIN, 3,
-        #         (255, 0, 250), 3)
-        cv2.imshow("Pose", imgClone)
+    cv2.putText(img, str(int(fps)), (40, 40), cv2.FONT_HERSHEY_PLAIN, 3,
+            (255, 0, 250), 3)
+    cv2.imshow("Image", img)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

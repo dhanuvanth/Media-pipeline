@@ -1,19 +1,36 @@
 import cv2
 import mediapipe as mp
 import numpy as np
+import os
+
+
+def Image_bg(background,numImg):
+
+  try:
+    if len(background)!=0:
+      if numImg > len(background) :
+        numImg = 0
+        print('reset')
+      img = cv2.imread(background[numImg])
+  except:
+    img = cv2.imread(background[0])
+    print(numImg)
+  
+  return img,numImg
 
 mp_drawing = mp.solutions.drawing_utils
 mp_selfie_segmentation = mp.solutions.selfie_segmentation
 
 # For webcam input:
+background = []
+for path in os.listdir(os.curdir + '/Background'):
+  background.append(os.curdir+'/Background/'+path)
+numImg = 0
 BG_COLOR = (192, 192, 192) # gray
 cap = cv2.VideoCapture(0)
 with mp_selfie_segmentation.SelfieSegmentation(
     model_selection=0) as selfie_segmentation:
-  try:
-    bg_image = cv2.imread('tower.PNG')
-  except:
-    bg_image = None
+  bg_image = None
   while cap.isOpened():
     success, image = cap.read()
     if not success:
@@ -51,10 +68,15 @@ with mp_selfie_segmentation.SelfieSegmentation(
       bg_image[:] = BG_COLOR
     else:
       bg_image = cv2.resize(bg_image,image.shape[::-1][1:])
-      bg_image = cv2.GaussianBlur(bg_image,(3,3),0)
+      # bg_image = cv2.GaussianBlur(bg_image,(3,3),0)
     output_image = np.where(condition, image, bg_image)
 
     cv2.imshow('MediaPipe Selfie Segmentation', output_image)
-    if cv2.waitKey(5) & 0xFF == 27:
+    key =  cv2.waitKey(1) & 0xFF
+    if key == ord('x'):
+      bg_image, numImg = Image_bg(background,numImg + 1)
+      print(numImg)
+      
+    elif key == 27:
       break
 cap.release()

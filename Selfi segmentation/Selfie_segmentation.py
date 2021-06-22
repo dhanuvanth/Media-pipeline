@@ -32,7 +32,7 @@ numImg = 0
 
 # For webcam input:
 BG_COLOR = (192, 192, 192) # gray
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 
 
 # video format (XVID is more preferable. MJPG results in high size video. X264 gives very small size video)

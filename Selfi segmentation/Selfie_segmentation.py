@@ -3,9 +3,10 @@ import mediapipe as mp
 import numpy as np
 import os
 
+######################################################################
 
+# Change Background
 def Image_bg(background,numImg):
-
   try:
     if len(background)!=0:
       if numImg > len(background) :
@@ -18,14 +19,18 @@ def Image_bg(background,numImg):
   
   return img,numImg
 
+ ###################################################################### 
+
 mp_drawing = mp.solutions.drawing_utils
 mp_selfie_segmentation = mp.solutions.selfie_segmentation
 
-# For webcam input:
+# Read the Image folder
 background = []
 for path in os.listdir(os.curdir + '/Background'):
   background.append(os.curdir+'/Background/'+path)
 numImg = 0
+
+# For webcam input:
 BG_COLOR = (192, 192, 192) # gray
 cap = cv2.VideoCapture(0)
 with mp_selfie_segmentation.SelfieSegmentation(
@@ -74,6 +79,7 @@ with mp_selfie_segmentation.SelfieSegmentation(
     cv2.imshow('MediaPipe Selfie Segmentation', output_image)
     key =  cv2.waitKey(1) & 0xFF
     if key == ord('x'):
+      # Change Background
       bg_image, numImg = Image_bg(background,numImg + 1)
       print(numImg)
       

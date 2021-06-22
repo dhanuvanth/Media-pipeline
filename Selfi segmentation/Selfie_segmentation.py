@@ -32,7 +32,16 @@ numImg = 0
 
 # For webcam input:
 BG_COLOR = (192, 192, 192) # gray
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
+
+
+# video format (XVID is more preferable. MJPG results in high size video. X264 gives very small size video)
+four_cc = cv2.VideoWriter_fourcc(*'XVID')
+# videoWriter("output name", format, frames, size)
+out = cv2.VideoWriter('Video_Demo.mp4', four_cc, 24.0, (640,480))
+
+
+
 with mp_selfie_segmentation.SelfieSegmentation(
     model_selection=0) as selfie_segmentation:
   bg_image = None
@@ -75,6 +84,8 @@ with mp_selfie_segmentation.SelfieSegmentation(
       bg_image = cv2.resize(bg_image,image.shape[::-1][1:])
       # bg_image = cv2.GaussianBlur(bg_image,(3,3),0)
     output_image = np.where(condition, image, bg_image)
+    # write the video
+    out.write(output_image)
 
     cv2.imshow('MediaPipe Selfie Segmentation', output_image)
     key =  cv2.waitKey(1) & 0xFF
@@ -86,3 +97,5 @@ with mp_selfie_segmentation.SelfieSegmentation(
     elif key == 27:
       break
 cap.release()
+out.release()
+cv2.destroyAllWindows()
